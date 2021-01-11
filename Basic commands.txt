@@ -1,0 +1,917 @@
+#finding stuff
+$locate nmap	//every occurence of nmap
+$whereis nmap	//location of binary file
+$which nmap	//returns the location of binary files in path variable
+$find / -type f --name nmap	// "/" in whole system type = file (f) and name nmap
+
+
+#process list
+$ps aux	//list all process running
+
+
+#removing directory
+$rmdir directory_name //if directory_name is empty then it will work
+#removing files
+$rm file_name	// removes file_name
+$rm *.txt	//removes all txt files
+$rm *.*		//removes all files
+#remove dir recursilvely same as above command but with directory name
+$rm -r directory_name
+
+
+#Viewing files
+$cat path_of_file
+$head path_of_file	//by default first 10 lines -20 to customize 20 lines
+$tail path_of_file	//by default last 10 line -15 to customize 15 line to view
+$nl path_of_file	//displaying line with numbers
+$more path_of_file
+$less path_of_file
+
+
+#to find and replace
+$sed s/mysql/MySql/g /etc/snort/snort.conf > snort2.conf	//s for search , replace mysql with MySql , g for globally , then the location of the file , then saving to the other file name snort2.conf
+$sed s/mysql/MySql/2 /etc/snort/snort.conf > snort2.conf	//if want to replace 2 occurence then replace g with 2 like 
+
+#to change the ipaddress
+$ifconfig eth0 192.168.181.115	//eth0 or wlano as we want to change the ip address of, and ip is the new one which we want
+#changing network mask and broadcast address
+$ifconfig  eth0 192.168.181.115 netmask 255.255.0.0 broadcast 192.168.1.255
+
+#changing mac address
+$ifconfig eth0 down
+$ifconfig eth0 hw ether 00:11:22:33:44:55	//hw means hardware and ether for internet
+$ifconfig eht0 up
+
+
+#Assingning new ip address from the DHCP server (Dynamic Host Configuration Protocol)
+$dhclient eth0
+
+#Examining DNS with dig
+$dig www.hackers-arise.com ns	//ns for nameserver //like ns , mx for mail exchange server
+
+
+#how to change DNS server
+$mousepad /etc/resolv.conf
+//now add your dns server , like I want to add google public DNS server
+//then I wil add this line
+nameserver 8.8.8.8
+
+
+
+#Mapping Ip address to desired domain name in own or target machine
+$mousepad /etc/hosts
+--------before------------
+ 127.0.0.1       localhost
+ 127.0.1.1       kali
+
+//now I want if typing bankofIndia.com in my pc or target machine It will be forward to my website of ip  192.168.181.131
+---------after------------
+127.0.0.1       localhost 
+127.0.1.1       kali 
+192.168.181.131 bankofamerica.co
+//use tab between ip address and site name
+
+
+
+#Adding and removing software 
+
+#to see whether the software is already installed in system
+$type -a software_name
+
+#Searching for a Package
+$apt-cache search keyword  /or/  $apt search keyword 
+
+#installing software
+$sudo apt install package_name
+
+#removing software
+$sudo apt remove package_name  //this doesn't remove configuration file so in future we can reinstall without reconfiguring
+
+$sudo apt purge package_name	//this will software as well as configuration files and other dependiences also i.e. total removal
+
+#updating packages	//this will only upgrade the repository list which include new software which are add to repo
+$sudo apt update
+
+#upgrading packages	//this will actually update the software on our system
+$sudo apt upgrade
+
+
+#adding repository in source list
+$mousepad /etc/apt/sources.list
+//we will add ubuntu repo after kali so if software is not found in kali repo than it will find in ubuntu repo as ubuntu and kali both belongs to debian 
+
+#install software using git
+$sudo git clone github_url
+//eg - to download bluediving bluetooth hacking suite
+$sudo git clone  https://www.github.com/balle/bluediving.git
+
+
+
+
+#Controlling file permissions
+
+#granting ownership to an individual User
+$chown bob /tmp/bobsfile	//granting bob the ownership of the bobsfile
+
+#granting ownership to an group	//root group or root member will grant permission to group Security to access newIDS
+$chgrp Security newID		//This is performed by root user
+
+#checking permission of the files
+$ls -al /usr/share/hashcat	//can enter any path of directory or by default it shows of present directory
+drwxr­xr­x  5  root  root    4096     Dec 5 10:47  charsets		//'d' in start for directory  //root root is the owner and group of the file
+­rw­r­­r­­  1  root  root    33685504 June 28 2018 hashcat.hcstat	//'-' in start for file
+//The first set represents the permissions of the owner; the second, those of the group; and the last, those of all other users.
+
+//Only a root user or the file’s owner can change permissions.
+
+
+#changing permission of hashcat.hashcat file
+$chmod 777 hashcat.hashcat	//this will grant rwx permission to owner group and all user
+//when we download by default linux add 666 permission to files so we cannot exceute it so to add execute permission as root user we will type
+$chmod 766 new_downloaded_file
+
+
+#Granting Temporary Root Permissions with SUID
+$chmod 4644 filename
+
+#Granting the Root User’s Group Permissions SGID
+$chmod 2644 filename	//SGI D  also grants temporary elevated permissions, but it grants the permissions of the file owner’s group, rather than of the file’s owner
+//All users in that group can execute the file(s), not just a single user.
+
+
+#To find programs which have SUID set in machine for the user root
+$find / -user root -perm -4000 2>/dev/null
+ls -al of /bin/
+­rwsr­xr­x 1  root  root  140944    Jul 5  2018    sudo		//here we can see -rws here s means file has SUID set
+
+#########Process management###################
+
+#Viewing processes
+$ps
+$ps aux		//shows all processes for all users
+$top		//list process according to ascending order of resource used
+
+
+#setting priority of process using nice to a program slowprocess located at /bin/slowprocess
+
+$nice -n -10 /bin/slowprocess		//increasing its priority  and allocating it more resources
+// In case we want this process to get slower i.e. give it low priority than 
+$nice -n 10 /bin/slowprocess
+
+#Changing the Priority of a Running Process with renice
+$renice 20 6696		//It set absolute value between -20 to 19 so it is used only to give low priority when it is already running so and it requires PID of the process in this case it is (6696)(/bin/slowprocess)
+//this can be done using $top command also  , press R key edit PID and also add nice value.
+
+
+#Killing process
+name		number		Description
+SIGHUP		1		It stops the designated process and restarts it with the same PID
+SIGINT		2		It is a weak signal that isn't guaranteed to work, but it works in most cases.
+SIGQUIT		3		IT terminates the process and saves the process information in memory, and then it save this information in current directory to a file name core.
+SIGTERM		15		This is default kill termination command.
+SIGKILL		9		This is the absolute kill. It forces the process to stop by sending the process's resources to a special device, /dev/null.
+
+like - $kill -9 zoombie_process		//zoombie_process is the freezed not not useful process so we will kill it completely
+
+//we can also kill process using $top and then pressing [k] and enter PID of the process
+
+#Running app in the background
+//Running a process in the background simply means that it will continue to run without needing the terminal. In this way, the terminal is freed up for other duties.
+$leafpad newscript &		//to start text editor in background 
+
+#moving a process to the foreground
+$fg 1234	//1234 is The PID of the process do ps to find the PID of the background process
+//or use jobs to find background process running
+$jobs and then do the above command
+
+
+#Scheduling processes using at and crond
+at	//for once in future
+crond	//schedueling everyday, every week,every  month
+
+eg of at -
+$at 7:20pm
+$at 7:20pm June 25
+$at noon
+$at nonn June 25
+$at tomorrow
+$at now + 20 minutes
+$at now + 10 hours
+$at now + 5 days
+$at now + 3 weeks
+----------------------------
+kali>at 7:20pm
+at>/root/MyScanningScript
+--------------------------
+
+
+\7
+#viewing and modifying Environment variables
+//to view
+kali>env			//will show default Environment variable which are in Capital cases
+kali>set | more		//to view all environment variables, including shell variables, local variables and shell function
+kali>set | grep HISTSIZE	//to find variables rather than looking through more
+//HISTSIZE contains the maximum number of commands "command history file" can store
+
+//to not leave any evidence of command in target system we will not save history of commands by
+kali>HISTSIZE=0
+
+//above command just do temporary set the variable in that environment bash cell but to permanent save we will use
+//first saving the variable data in a file
+kali>echo $HISTSIZE > ~/valueofHISTSIZE.txt
+//or we can save all the variable data in a file for backup
+kali>set > ~/valueofAllSetVariables.txt
+
+//after we have changed the value from default value i.e. for example
+kali>set | grep HISTSIZE
+HISTSIZE=1000
+kali>HISTSIZE=0		//setting new value
+kali>export HISTSIZE	//making it permanent
+
+#changing shell prompt
+default prompt- username@hostname:current_directory
+
+kali>PS1="ved@Mrescape$"	//this will change the prompt
+kali>export PS1			//to make it permanent
+
+\u  The name of the current user
+\h  The hostname
+\W  The base name of the current working directory
+//to make windows like prompt
+kali>export PS1='c:\w>'
+c:/tmp>
+
+#changing path varaible
+$echo $PATH		//to view path variable
+
+// now we will add path of our donwload folder in path variable
+kali>PATH=$PATH:/home/kali/Downloads
+kali>echo $PATH
+//we will see that our path is added
+//Now to make it permanent
+kali>export PATH
+
+
+#Creating a User-defined variable
+kali>MYNEWVARIABLE="We can add any string"
+//to view the content of the variable
+kali>echo $MYNEWVARIABLE
+//if we want we can make it permenant by "kali>export MYNEWVARIABLE"
+//to delete this new variable
+kali>unset MYNEWVARIABLE
+kali>echo $MYNEWVARIABLE	//no response from this now
+
+
+------------------------BASH Scripting-----------------------
+
+#first script 
+//we need to tell our operating system which interpreter we want to use for the script by
+'#!'
+we will use bash shell interpreter
+#!/bin/bash
+
+-----------------------
+#!/bin/bash
+#this is comment
+echo "Hello Anbu blackops"
+----------------------
+1)save as hello with no extension //kali will automatically understand that it is a bash file
+2)kali>chmod 755 hello
+//running the script
+3)kali>./hello
+
+
+Q.  we will add functionality to prompt the user for their name, place whatever they input into a variable, then prompt the user for the chapter they’re at in this book, and place that keyboard input into a variable. After that, we’ll echo a welcome message that includes their name and the chapter back to the user.
+
+------------------------
+#!/bin/bash
+echo "What is your name?"
+read name
+echo "What chapter are you in Linux Basic for hackers?"
+read chapter
+echo "Welcome" $name "to chapter" $chapter "of Linux Basics for Hackers!"
+---------------------------
+save this as welcome.sh		//.sh extension is for script files
+
+
+//simple Scanner //scanning port 3306(default of MySQL) on local area network
+
+#!/bin/bash
+# This Script is designed to find hosts with MySQL installed
+nmap -sT 192.168.181.0/24 -p 3306 > /dev/null -oG MySQLscan		//change ip according to local network, here -oG is for Grep-able format
+cat MySQLscan | grep open > MySQLscan2
+cat MySQLscan2
+
+
+//making dynamic script
+
+#!/bin/bash
+echo "enter the starting IP address"
+read firstIP
+echo "enter the last octet of the last IP address:"
+read lastOctetIP
+echo "Enter the port number you want to scan for:"
+read port
+nmap -sT $firstIP-$lastOctetIP -p $port > /dev/null -oG MySQLscan
+cat MySQLscan | grep open > MySQLscan2
+cat MySQLscan2
+
+
+-------------------COMPRESSING and ARCHIVING------------------
+
+#Tarring files		//this means combining files	//also known as archiving
+tar -cvf combine.tar file1 file2 file3			//c for create, v for verbose (list the files we are archiving), f means write to the following files
+
+//we can view the content of the tarball without extracting files
+tar -tvf combine.tar		//-t to list content
+
+//to extract files from tarball
+tar -xvf combine.tar		//-x for extracting
+
+#Compressing files
+
+1)gzip extension .tar.gz or .tgz
+2)bzip2 extension .tar.bz2
+3)compress extension .tar.z
+
+strongest ---->
+compress - gzip - bzip2
+
+#compressing with gzip
+kali>gzip combine.*
+kali>gzip combine.tar		//do it in directory which contains the tar file
+
+#to decompress the tar file	//this can also be used to extract zip file
+kali>gunzip combine.*
+kali>gunzip combine.tar.gz
+//kali>gunzip any_zip_file.zip	//to decompress the zip file
+
+#compress with bzip2
+kali>bzip2 combine.*
+$to decompress .tar.bz2
+kali>bunzip2 combine.*
+
+#compressing with compress
+kali>compress combine.*
+#to decompress .tar.Z file
+kali>uncompress combine.*	//gunzip can also be used
+
+#creating bit by bit physical copy of drive---------------------using dd
+#making physical copy of flash drive if it is sdb
+kali>dd if=/dev/sdb of=/root/flashcopy
+
+more advanced
+kali>dd if=/dev/media of=/root/flashcopy bs=4096 conv:noerror		//bs for blocksize and conv:noerror if error occures then are ignored and copy continues
+
+
+---------------Disk partition--------
+#to view all disk on system
+kali>fdisk -l
+#type of disk
+//High Performance File System (HPFS)
+//New Technology File System (NTFS)
+//Extended File Allocation Table (exFAT)
+
+#to view block devices //here block is refer as more number of byte collection not resitircited (block)
+kali>lsblk
+
+#Mounting Storage Devices Yourself
+// The two main mount points in Linux are /mnt and /media. As a general rule, internal hard drives are mounted at /mnt, and external USB devices such as flash drives and external USB hard drives are mounted at /media, though technically any directory can be used.
+
+//to mount the new hard drive sdb1 at the /mnt directory
+kali>mount /dev/sdb1 /mnt
+
+// to mount the flash drive sdc1 at the /media directory
+kali>mount /dev/sdc1 /media
+
+//The filesystems that are mounted on a system are kept in a file at /etc/fstab (short for filesystem table), which is read by the system at every bootup.
+
+
+#unmounting with umount
+kali>umount /dev/sdb1		//we will write the device name which already mounted
+
+#getting information on Mounted Disks
+kali>df
+
+#checking for errors
+//It’s important to note that you must unmount the drive before running a filesystem check
+kali>fsck	//by the way this will not work this is for example//filesystem check//this is for demo of command rest is explain below.
+//lets do an check on flashdrive which is sdb1
+kali>umount /dev/sdb1
+kali>fsck -p /dev/sdb1		//-p for to repair any problems with device
+
+--------------------------LOGGING----------------------------------
+#rsyslog is the utility in debian which logs so we will locate it in our system/Any debian system Kali included
+
+kali>locate rsyslog
+
+#we have one configure file which is useful located at /etc/rsyslog.conf
+#we will edit this file
+
+kali>mousepad /etc/rsyslog.conf
+
+
+############## Here Rules area is useful##########
+
+# here we have all the information of the location of the logged information
+
+#From the data we find that log are generally logged at
+
+"~/var/log"
+
+########## Automatic Cleaning up logs with Logrotate ######################
+# we need to configure the conf file of logrotate cronjob utility
+
+kali>mousepad /etc/logrotate.conf
+
+# if you check your log files every week and want to save storage space, you could change this setting to
+rotate 1 
+
+################REMANING STEALTHY##########################
+
+#Removing Evidence
+#we will use shred which Overwrite the specified FILE(s) repeatedly in order to make it harder for even very expensive hardware probing to recover data 
+#we’ll shred the log files in /var/log/auth.log 10 times using the following command:
+
+kali>shred -f -n 10 /var/log/auth.log.*		//e -f  option, which changes the permissions on the files to allow overwriting if a permission change is necessary, and the – n  option, which lets you choose how many times to overwrite the files. 
+// we’re shredding not just the auth.log file, but also any logs that have been created with lo grot ate , such as auth.log.1, auth.log.2, and so on.
+
+#Disabling Logging
+
+#stopping rsyslog daemon
+kali>service rsyslog stop
+
+
+
+---------------------------- USING AND ABUSING SERVICES----------------
+
+Basic syntax to start stop and restart a service
+
+kali>service service_name start|stop|restart
+
+#to start apache2 service 
+kali>service apache2 start
+
+#to stop apache2 service
+kali>service apache2 stop
+
+#to restart apache2 service
+kali>service apache2 restart
+
+#Editing the index/html file
+located at /var/www/html/index.html
+//change its content as we wish
+
+#Extracting information from MYSQL
+
+//to start mysql service
+kali>service mysql start
+//now logging in 
+kali>mysql -u root -p
+//now enter root user password by default it is empty so we will change it first to be secure
+
+#SQL language is used to interact with MYsql database
+//few commands
+select  Used to retrieve data
+union  Used to combine the results of two or more select operations
+insert  Used to add new data
+update  Used to modify existing data
+delete  Used to delete data
+
+#Setting a Mysql password
+
+mysql>select user, host, password from mysql.user;
+
+//to see available database
+
+mysql>show databases;
+
+//MySQL comes with three databases by default, two of which (information_schema and
+//performance_schema) are administrative databases that we won’t use here. We’ll use the non­administrative database, m ys ql , which is included for your own purposes.
+//to begin using mysql database
+
+mysql>use mysql;
+
+//This command connects us to mysql . Now, we can set the password for the root user to hackers­arise with the following command
+mysql>update user set password= PASSWORD("hackers-arise") where user='root';
+
+#Accessing a Remote Database
+kali>mysql -u <username> -p	//this will open our own database in our system
+
+//but to access remote server
+kali>mysql -u root -p 192.168.1.101<-------IP of the remote server
+
+
+#Connecting to database
+mysql >show databases; 
++­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­+ 
+| Database                      | 
++­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­+ 
+| information schema            | 
+| mysql                         | 
+| creditcardnumbers             | 
+| performance_schema            | 
++­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­+ 
+4 rows in set (0.26 sec)
+
+//here we have creditcardnumber so we will explore it
+mysql>use creditcardnumbers
+
+//to see tables in the database
+mysql>show tables;
++­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­+ 
+| Tables_in_creditcardnumbers       | 
++­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­+ 
+|  cardnumbers                      | 
++­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­­+ //it has one table
+
+// to see the structer of the table
+mysql>describe cardnumbers;
++­­­­­­­­­­­­­­­+­­­­­­­­­­­­­­+­­­­­­­­­+­­­­­­­­­­­+­­­­­­­­­+­­­­­­­­­+ 
+| Field         | Type         | Null    | Key       | Default | Extra   | 
++­­­­­­­­­­­­­­­+­­­­­­­­­­­­­­+­­­­­­­­­+­­­­­­­­­­­+­­­­­­­­­+­­­­­­­­­+ 
+| customers     | varchar(15)  | YES     |           | NULL    |         |
+| address       | varchar(15)  | YES     |           | NULL    |         | 
+| city          | varchar(15)  | YES     |           | NULL    |         | 
+| state         | varchar(15)  | YES     |           | NULL    |         | 
+| cc            | int(12)      | NO      |           | 0       |         | 
++­­­­­­­­­­­­­­­+­­­­­­­­­­­­­­+­­­­­­­­­+­­­­­­­­­­­+­­­­­­­­­+­­­­­­­­­+
+
+//to actually see the data in the table
+
+syntax ::: SELECT columns FROM table;
+
+//to see dump of data of all columns from the table we will use * asterisk
+
+mysql>SELECT * from cardnumbers;
++­­­­­­­­­­­+­­­­­­­­­­­­­­­+­­­­­­­­­­­­­+­­­­­­­­­+­­­­­­­­­­­­­­+ 
+| customers | address       | city        | state   | cc           | 
++­­­­­­­­­­­+­­­­­­­­­­­­­­­+­­­­­­­­­­­­­+­­­­­­­­­+­­­­­­­­­­­­­­+ 
+| Jones     |  1 Wall St    | NY          | NY      |   12345678   | 
+| Sawyer    | 12 Piccadilly | London      | UK      |  234567890   | 
+| Doe       | 25 Front St   | Los Angeles | CA      | 4567898877   | 
++­­­­­­­­­­­+­­­­­­­­­­­­­­­+­­­­­­­­­­­­­+­­­­­­­­­+­­­­­­­­­­­­­­+
+
+##################POSTGRESQL with METASPLOIT######################################
+//start postgresql service
+kali>service postgresql start
+
+//starting metaslpoit framework
+kali>msfconsole
+//setting up postgresql database to store data from any metasploit activity
+kali>msfdb init
+//Next, we need to log in to Postgres as root. Here, we precede the command with su , the “switch user” command, to obtain root privileges:
+msf>su postgres
+// next step, we need to create a user and password, 
+postgres@kali:/root$ createuser msf_user -P
+//now Enter password
+
+//we need to create the database and grant permissions for msf_user. Name the database apes_db
+postgres@kali:/root$ createdb --owner=msf_user apes_db
+postgres@kali:/root$ exit
+
+//we have to connect our Metasploit console, msfconsole, to our PostgreSQL database by
+msf>db_connect msf_user:password@127.0.0.1/apes_db
+
+//to check status of the database
+msf>db_status
+
+-----------------------------------------BECOMING SECURE AND ANONYMOUS--------------------
+
+1) USE TOR browser
+
+2) use proxy server
+//using proxy chains
+syntax : proxychains <command we want proxied> <arguments>
+#use proxychains  to scan a site with nmap anonymously
+kali>proxychains nmap -sT -Pn <IP_of_the_site>
+
+
+//Setting up proxy for proxychains in /etc/proxychains.conf
+kali>mousepad /etc/proxychains.conf
+
+//at line 61 we have Proxylist section
+//We can add proxies by entering the IP addresses and ports of the proxies we want to//
+//use in this list. For now, we’ll use some free proxies. You can find free proxies by googling “free proxies” or using the site 
+//http://www.hidemy.name
+//after adding we have something like this
+Here’s an example:
+ [ProxyList] 
+# add proxy here... 
+socks4 114.134.186.12 22020 <--------------
+socks4 188.187.190.59 8888                |----this are mine added proxies from the website
+socks4 181.113.121.158 335551<-------------
+
+# meanwhile # defaults set to "tor"
+# socks4 127.0.0.1 9050
+
+
+// open the browser Firefox and have it navigate to https://www.hackers­arise.com
+kali>proxychains firefox https://www.hacker-arise.com/
+
+
+//if one of the proxies is down or not responding, automatically goes to the next proxy in the list without throwing an error. If we didn’t set this up, a single failing proxy would break our request.
+Go back into your proxychains configuration file, find the dynamic_chain  line (line 10), and uncomment it, as shown next. Also make sure you comment out the strict_chain line if it isn’t already.
+
+
+#Random chaining
+comment the lines
+dynamic_chain and strict_chain
+like -
+#dynamic_chain
+#strict_chain
+
+and uncomment 
+random_chain
+
+//we can use only one from stric_chain random_chain and dynamic_chain so comment the rest which are not used
+
+
+//find and uncomment the line with chain_len  and then give it a reasonable number like 2,3,4,etc. This line determines how many of the IP addresses in your chain will be used in creating your random proxy chain.
+
+//use VPN service
+//Some of the best and most popular commercial VPN services, according to CNET
+IPVanish
+NordVPN
+ExpressVPN
+CyberGhost
+Golden Frog VPN
+Hide My Ass (HMA)
+Private Internet Access
+PureVPN
+TorGuard
+Buffered VPN
+
+//use encrypted email service like ProtonMail
+
+-----------------------UNDERSTANDING AND INSPECTION WIRELESS NETWORKS---------------------
+//Important terms of the wireless interface wifi
+ESSID (extended service set identifier) This is the same as the SSID, which we discussed in Chapter 3, but it can be used for multiple APs in a wireless LAN.
+BSSID (basic service set identifier) This is the unique identifier of each AP, and it is the same as the MAC address of the device.
+SSID (service set identifier) This is the name of the network.
+
+//network information
+kali>ifconfig
+
+//To view wireless interface data
+kali>iwconfig
+
+// see all the wireless access points your network card can reach using the iwlist  command
+syntax for iwlist is as follows:
+iwlist interface action
+
+kali>iwlist wlan scan
+//same we have another code with more information nmcli (network managment command line interface)
+kali>nmcli dev wifi	//dev for devices
+
+//to connect to a wifi network using command line interface
+SYNTAX :
+kali>nmcli dev wifi connect AP_SSID password AP_password 	//AP_SSID is the name of the wifi router and AP_password is the password of the AP 
+
+
+___________________INFORMATION given is not clear I would recomment to see videos________
+//To put your wireless network card in monitor mode, use the airmon-ng  command from the aircrack­ng suite
+//here step to convert mode of wifi adapter is not shown do it on your own
+//now we will start monitoring the traffic using this
+kali>airmon-ng start wlan0
+
+//to get information
+kali>airodump-ng wlan0mon<--------this is the name given by the airmon-ng it can be different chech the name using ifconfig
+
+######################## DETECTING and CONNECTIING TO BLUETOOTH ####################
+
+#Bluetooth scanning and reconnaissance using Bluez tool 
+//to bring up bluetooth interface and query the devices for its specs
+//this is to check whether we have our bluetooth device is recognizable
+kali>hciconfig
+//if MAC address come then bingo
+
+//now we will enable the device in our kali
+kali>hciconfig hci0 up
+
+//Now we will scan device
+kali>hcitool scan
+//gather information of the device in the range
+kali>hcitool inq
+
+//this will give us MAC address of the devices and other important details
+//type of Bluetooth device you found, and you can look up the code and see what type of device it is by going to the Bluetooth SIG site at https://www.bluetooth.org/en­us/specification/assigned­numbers/servicediscovery/.
+
+#scanning for service with sdptool (SDP - service discover protocol)
+kali>sdptool browse MAC_ADDRESS<-------which can be obtained from hcitool inq
+
+#Seeing whether the device are reachable with l2ping
+kali>l2ping MAC_ADDRESS -c 4		//which we already know from the hcitool inq
+
+
+
+
+
+
+-------------------------------MANAGING THE LINUX KERNEL AND LOADABLE KERNEL MODULES-------------------
+#CHECKING The Kernel Version
+
+kali>uname -a
+//another way is 
+kali>cat /proc/version
+
+
+#Kernel tuning with sysctl
+//to get info of all parameters
+kali>sysctl -a | less
+
+//enabling packet forwarding 
+
+//first lets see its all parameters
+kail>sysctl -a | less | grep ipv4
+//we will have something like this output
+net.ipv4.ip_dynaddr = 0 
+net.ipv4.ip_early_demux = 0 
+net.ipv4.ip_forward = 0 
+net.ipv4.ip_forward_use_pmtu = 0
+
+//here we have to enable forward option
+
+kali>sysctl -w net.ipv4.ip_forward = 1
+
+//this change will remain until system reboot so to make it permanent
+//we will edit config file of sysctl
+
+kali>mousepad /etc/sysctl.conf
+//uncomment the line
+net.ipv4.ip_forward = 1
+//and save the file
+
+
+//From an operating system–hardening perspective, you could use this file to disable ICMP echo requests by adding the line 
+net.ipv4.icmp_echo_ignore_all=1 
+to make it more difficult— but not impossible—for hackers to find your system. 
+After adding the line, you will need to run the command 
+"sysctl -p" 
+
+
+#we have insmod (insert module) suite to insert modules in kernel
+#To list the installed module
+kail>lsmod
+
+#finding more information with modinfo of the kernel module
+kali>modinfo bluetooth
+
+#adding and removing modules with modprobe
+kali>modprobe -a <module_name>		//-a for add
+kali>modprobe -r <module_name>		//-r for remove
+//above function can be done using insmod command but modprobe is more efficient and safe
+
+#Inserting and removing a kernel module
+//Let’s assume for demonstration purposes (don’t actually run these commands) that we want to add a new video driver named HackersAriseNewVideo. You can add it to your kernel by entering the following
+kali>modprobe -a HackerAriseNewVideo
+//To test whether the new module loaded properly, you can run the dmesg  command, which prints out the message buffer from the kernel, and then filter for “video” and look for any alerts that would indicate a problem:
+kali>dmesg | grep Video
+//if nothing appears it is good
+//now to remove this module which we installed
+kali>modprobe -r HackerAriseNewVideo
+
+
+
+-----------------------AUTOMATING TASKS WITH JOB SCHEDULING-----------------------------
+
+#scheduling an event or job to run on an Automatic basis
+crond<-----this is daemon which do all the this automatic jobs
+//jobs are registered in crontab<----------cron table
+//it is located at /etc/crontab
+
+//to edit this jobs we can run this command
+kali>crontab -e
+this will prompt us to choose select an editor like nano vim etc choose from there
+
+// Another option is to edit the file directly with our favourite editor
+kali>leadpad /etc/crontab		|| kali>mousepad /etc/crontab
+
+//The crontab file helpfully labels the columns for you. Note that the first field provides the minute (30 ), the second field provides the hour (2 ), the fifth field provides the days (1 5 , or Monday through Friday), the sixth field defines the user (root ), and the seventh field is the path to the script. The third and fourth fields contain asterisks (* ) because we want this script to run every day Monday through Friday regardless of the day of the month or the month.
+
+#format of the table is 
+M  H  DOM  MON  DOW  USER  COMMAND //The crontab file helpfully labels the columns for you. Note that the first field provides the minute (30 ), the second field provides the hour (2 ), the fifth field provides the days (1 5 , or Monday through Friday), the sixth field defines the user (root ), and the seventh field is the path to the script. The third and fourth fields contain asterisks (* ) because we want this script to run every day Monday through Friday regardless of the day of the month or the month.
+30 2  *    *    1­5  root  /root/myscanningscript		//0 for sunday and 6 for saturday //1-5 mean monday to friday everyday //if want particulars day like monday and friday then 1,5
+//" * " means all 
+
+kali>mousepad /etc/crontab
+# /etc/crontab: system­wide crontab 
+# Unlike any other crontab, you don't have to run the 'crontab' 
+# command to install the new version when you edit this file 
+# and files in /etc/cron.d. These files also have username fields, 
+# which no other crontabs do.
+SHELL=/bin/sh 
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+# m h dom mon dow user command 
+17 * * * * root cd / && run­parts ­­report /etc/cron.hourly 
+25 6 * * * root test ­x /usr/sbin/anacron II ( cd / && run­parts 
+47 6 * * 7 root test ­x /usr/sbin/anacron II ( cd / && run­parts 
+52 6 1 * * root test ­x /usr/sbin/anacron II ( cd / && run­parts 
+#
+
+#Now, to set a new regularly scheduled task, you simply need to enter a new line and save the file
+
+//just adding this line in above  file at the end
+00 2 * 6-8 0,6 user /usr/share/MySQLsscanner.sh
+
+
+#crontab shortcuts
+@yearly
+@annually
+@monthly
+@weekly
+@daily
+@midnight
+@noon
+@reboot
+example
+@midnight user /usr/share/MySQLscanner.sh	//here user is user in the system in our case root or kali will come
+
+
+#using RC scripts to run jobs at startup
+#adding services to rc.d
+
+command > update-rc.d
+syntax
+kail>update-rc.d <name of the script or service>
+<remove|defaults|disable|enable>
+
+//Now, let’s update our rc.d to have PostgreSQL run automatically at bootup
+kali >update-rc.d postgresql defaults
+
+#adding services to our Bootup via a GUI
+kali>apt install rcconf
+
+kali>rcconf
+//and add whatever we want at the bootup
+
+
+
+------------------------PYTHON SCRIPTING BASICS FOR HACKERS---------------------------
+list of third­party modules at PyPI - http://www.pypi.org/
+
+#Using pip(Pip Installs Packages)
+Python has a package manager specifically for installing and managing Python packages known as pip.
+
+installing pip for python 3
+kali>apt install python3-pip
+
+//to install modules from PyPI we can enter
+kali>pip3 install <package_name>
+
+//downloaded packages are placed in /usr/local/lib/<python-version>/dist-packages
+for instance, if you had used pip to install the Python implementation of the SNMP protocol for Python 3.6, you would find it at /usr/local/lib/python3.6/pysnmp
+
+//we can also the path of the dowloaded package like
+kali>pip3 show pysnmp
+
+//As an alternative to using pip, you can download a package directly from the site (make certain that is downloaded to the proper directory), unpack it, and then run the following
+kali>python3 setup.py install
+
+#Installing third-Party Modules
+
+//we can simply use "wget"  to download it from wherever it is being stored online, uncompress the module, and then run the python setup.py install  command.
+
+//lets download and install python module for port-scanning tool from its online repository at https://xael.org
+//first download the module form xael.org
+
+kali>wget http://xael.org/norman/python/python-nmap/python-nmap-0.3.4.tar.gz
+//now uncompressing it
+kali>tar -xvf python-nmap-0.3.4.tar.gz
+kali>cd python-0.3.4/
+//installing the module
+kali>python setup.py install
+
+
+//Kali has the IDE PyCrust built in,
+//the best is arguably JetBrain’s PyCharm
+//lets create a script and save it as hacker-arise.py
+------------------------------------------------
+#!/usr/bin/python3
+
+name="OccupyTheWeb"
+
+print("Greeting to"+name+"from hackers group.")
+
+---------------------------------------------------
+//giving permission to run the script
+
+kali>chmod 755 hacker-arise.py
+//now go in the above file directory and run the script
+kali>./hacker-arise.py
+
+#banner grabbing script
+#!/usr/bin/python3
+import socket
+s = socket.socket()
+s.connect(("192.168.1.101",22))
+answer = s.recv(1024)
+print(answer)
+s.close
+
+
+
+
+
+
+
